@@ -2,8 +2,8 @@
 
 const chai = require('chai'),
   expect = chai.expect,
-  Support   = require('../support'),
-  DataTypes = require('../../../lib/data-types'),
+  Support   = require(__dirname + '/../support'),
+  DataTypes = require(__dirname + '/../../../lib/data-types'),
   current   = Support.sequelize;
 
 describe(Support.getTestDialectTeaser('Instance'), () => {
@@ -169,23 +169,6 @@ describe(Support.getTestDialectTeaser('Instance'), () => {
       for (const attr in this.User.rawAttributes) {
         expect(user.changed(attr), `${attr} is not changed`).to.equal(false);
       }
-    });
-
-    describe('setDataValue', () => {
-      it('should return falsy for unchanged primitive', function() {
-        const user = this.User.build({
-          name: 'a',
-          meta: null
-        }, {
-          isNewRecord: false,
-          raw: true
-        });
-
-        user.setDataValue('name', 'a');
-        user.setDataValue('meta', null);
-        expect(user.changed('name')).to.equal(false);
-        expect(user.changed('meta')).to.equal(false);
-      });
     });
   });
 });

@@ -9,7 +9,6 @@ Model.findAll({
   attributes: ['foo', 'bar']
 });
 ```
-
 ```sql
 SELECT foo, bar ...
 ```
@@ -21,7 +20,6 @@ Model.findAll({
   attributes: ['foo', ['bar', 'baz']]
 });
 ```
-
 ```sql
 SELECT foo, bar AS baz ...
 ```
@@ -33,7 +31,6 @@ Model.findAll({
   attributes: [[sequelize.fn('COUNT', sequelize.col('hats')), 'no_hats']]
 });
 ```
-
 ```sql
 SELECT COUNT(hats) AS no_hats ...
 ```
@@ -53,7 +50,6 @@ Model.findAll({
   attributes: { include: [[sequelize.fn('COUNT', sequelize.col('hats')), 'no_hats']] }
 });
 ```
-
 ```sql
 SELECT id, foo, bar, baz, quz, COUNT(hats) AS no_hats ...
 ```
@@ -65,10 +61,10 @@ Model.findAll({
   attributes: { exclude: ['baz'] }
 });
 ```
-
 ```sql
 SELECT id, foo, bar, quz ...
 ```
+
 
 ## Where
 
@@ -79,7 +75,6 @@ Whether you are querying with findAll/find or doing bulk updates/destroys you ca
 It's also possible to generate complex AND/OR conditions by nesting sets of `or` and `and` `Operators`.
 
 ### Basics
-
 ```js
 const Op = Sequelize.Op;
 
@@ -141,7 +136,6 @@ Post.findAll({
 ### Operators
 
 Sequelize exposes symbol operators that can be used for to create more complex comparisons -
-
 ```js
 const Op = Sequelize.Op
 
@@ -162,9 +156,6 @@ const Op = Sequelize.Op
 [Op.notLike]: '%hat'       // NOT LIKE '%hat'
 [Op.iLike]: '%hat'         // ILIKE '%hat' (case insensitive) (PG only)
 [Op.notILike]: '%hat'      // NOT ILIKE '%hat'  (PG only)
-[Op.startsWith]: 'hat'     // LIKE 'hat%'
-[Op.endsWith]: 'hat'       // LIKE '%hat'
-[Op.substring]: 'hat'      // LIKE '%hat%'
 [Op.regexp]: '^[h|a|t]'    // REGEXP/~ '^[h|a|t]' (MySQL/PG only)
 [Op.notRegexp]: '^[h|a|t]' // NOT REGEXP/!~ '^[h|a|t]' (MySQL/PG only)
 [Op.iRegexp]: '^[h|a|t]'    // ~* '^[h|a|t]' (PG only)
@@ -184,7 +175,7 @@ const Op = Sequelize.Op
 Range types can be queried with all supported operators.
 
 Keep in mind, the provided range value can
-[define the bound inclusion/exclusion](data-types.html#range-types)
+[define the bound inclusion/exclusion](/manual/tutorial/models-definition.html#range-types)
 as well.
 
 ```js
@@ -202,7 +193,6 @@ as well.
 ```
 
 #### Combinations
-
 ```js
 const Op = Sequelize.Op;
 
@@ -242,9 +232,7 @@ const Op = Sequelize.Op;
 ```
 
 #### Operators Aliases
-
-Sequelize allows setting specific strings as aliases for operators. With v5 this will give you deprecation warning.
-
+Sequelize allows setting specific strings as aliases for operators -
 ```js
 const Op = Sequelize.Op;
 const operatorsAliases = {
@@ -256,13 +244,20 @@ const connection = new Sequelize(db, user, pass, { operatorsAliases })
 $gt: 6 // same as using Op.gt (> 6)
 ```
 
+
 #### Operators security
-
-By default Sequelize will use Symbol operators. Using Sequelize without any aliases improves security. Not having any string aliases will make it extremely unlikely that operators could be injected but you should always properly validate and sanitize user input.
-
+Using Sequelize without any aliases improves security.
 Some frameworks automatically parse user input into js objects and if you fail to sanitize your input it might be possible to inject an Object with string operators to Sequelize.
 
-For better security it is highly advised to use symbol operators from `Sequelize.Op` like `Op.and` / `Op.or` in your code and not depend on any string based operators like `$and` / `$or` at all. You can limit alias your application will need by setting `operatorsAliases` option, remember to sanitize user input especially when you are directly passing them to Sequelize methods.
+Not having any string aliases will make it extremely unlikely that operators could be injected but you should always properly validate and sanitize user input.
+
+For backward compatibility reasons Sequelize sets the following aliases by default -
+$eq, $ne, $gte, $gt, $lte, $lt, $not, $in, $notIn, $is, $like, $notLike, $iLike, $notILike, $regexp, $notRegexp, $iRegexp, $notIRegexp, $between, $notBetween, $overlap, $contains, $contained, $adjacent, $strictLeft, $strictRight, $noExtendRight, $noExtendLeft, $and, $or, $any, $all, $values, $col
+
+Currently the following legacy aliases are also set but are planned to be fully removed in the near future -
+ne, not, in, notIn, gte, gt, lte, lt, like, ilike, $ilike, nlike, $notlike, notilike, .., between, !.., notbetween, nbetween, overlap, &&, @>, <@
+
+For better security it is highly advised to use `Sequelize.Op` and not depend on any string alias at all. You can limit alias your application will need by setting `operatorsAliases` option, remember to sanitize user input especially when you are directly passing them to Sequelize methods.
 
 ```js
 const Op = Sequelize.Op;
@@ -321,7 +316,7 @@ const connection = new Sequelize(db, user, pass, { operatorsAliases });
 
 ### JSON
 
-The JSON data type is supported by the PostgreSQL, SQLite, MySQL and MariaDB dialects only.
+The JSON data type is supported by the PostgreSQL, SQLite and MySQL dialects only. 
 
 #### PostgreSQL
 
@@ -329,7 +324,7 @@ The JSON data type in PostgreSQL stores the value as plain text, as opposed to b
 
 #### MSSQL
 
-MSSQL does not have a JSON data type, however it does provide support for JSON stored as strings through certain functions since SQL Server 2016. Using these functions, you will be able to query the JSON stored in the string, but any returned values will need to be parsed seperately.
+MSSQL does not have a JSON data type, however it does provide support for JSON stored as strings through certain functions since SQL Server 2016. Using these functions, you will be able to query the JSON stored in the string, but any returned values will need to be parsed seperately. 
 
 ```js
 // ISJSON - to test if a string contains valid JSON
@@ -358,7 +353,6 @@ User.findAll({
 JSONB can be queried in three different ways.
 
 #### Nested object
-
 ```js
 {
   meta: {
@@ -372,7 +366,6 @@ JSONB can be queried in three different ways.
 ```
 
 #### Nested key
-
 ```js
 {
   "meta.audio.length": {
@@ -382,7 +375,6 @@ JSONB can be queried in three different ways.
 ```
 
 #### Containment
-
 ```js
 {
   "meta": {
@@ -396,7 +388,6 @@ JSONB can be queried in three different ways.
 ```
 
 ### Relations / Associations
-
 ```js
 // Find all projects with a least one task where task.state === project.state
 Project.findAll({
@@ -480,7 +471,7 @@ Subtask.findAll({
 
 ## Table Hint
 
-`tableHint` can be used to optionally pass a table hint when using mssql. The hint must be a value from `Sequelize.TableHints` and should only be used when absolutely necessary. Only a single table hint is currently supported per query.
+`tableHint` can be used to optionally pass a table hint when using mssql. The hint must be a value from `Sequelize.TableHints` and should only be used when absolutely necessary. Only a single table hint is currently supported per query. 
 
 Table hints override the default behavior of mssql query optimizer by specifing certain options. They only affect the table or view referenced in that clause.
 
@@ -493,35 +484,3 @@ Project.findAll({
   // this will generate the SQL 'WITH (NOLOCK)'
 })
 ```
-
-## Index Hints
-
-`indexHints` can be used to optionally pass index hints when using mysql. The hint type must be a value from `Sequelize.IndexHints` and the values should reference existing indexes.
-
-Index hints [override the default behavior of the mysql query optimizer](https://dev.mysql.com/doc/refman/5.7/en/index-hints.html).
-
-```js
-Project.findAll({
-  indexHints: [
-    { type: IndexHints.USE, values: ['index_project_on_name'] }
-  ],
-  where: {
-    id: {
-      [Op.gt]: 623
-    },
-    name: {
-      [Op.like]: 'Foo %'
-    }
-  }
-})
-```
-
-Will generate a mysql query that looks like this:
-
-```sql
-SELECT * FROM Project USE INDEX (index_project_on_name) WHERE name LIKE 'FOO %' AND id > 623;
-```
-
-`Sequelize.IndexHints` includes `USE`, `FORCE`, and `IGNORE`.
-
-See [Issue #9421](https://github.com/sequelize/sequelize/issues/9421) for the original API proposal.

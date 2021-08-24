@@ -22,6 +22,6 @@
 
 <hr />
 
-[![ErmesHotels Logo](asset/ermeshotels-logo.png)](https://www.ermeshotels.com)
+[![ErmesHotels Logo](asset/ermeshotels-logo.png)](https://ermeshotels.com)
 
 > Using Sequelize in production for two different apps with 30k+ daily users by 2 years. I doubt there is something better at this moment in terms of productivity and features.
