@@ -1,0 +1,1 @@
+# sequelize-pense-grande-plataforma
